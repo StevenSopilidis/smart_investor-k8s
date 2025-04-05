@@ -3,9 +3,9 @@ kind: ConfigMap
 metadata:
   name: user-service-configmap
 data:
-  GRPC_SERVER_ADDRESS: 0.0.0.0:8080
-  ENVIRONMENT: PRODUCTION
-  EMAIL_VERIFICATION_CODE_LENGTH: 10
+  GRPC_SERVER_ADDRESS: "0.0.0.0:8080"
+  ENVIRONMENT: "PRODUCTION"
+  EMAIL_VERIFICATION_CODE_LENGTH: "10"
 
 ---
 apiVersion: apps/v1
@@ -21,34 +21,35 @@ spec:
     metadata:
       labels:
         app: user-service
-    containers:
-      - name: user-service
-        image: stevensopi/smart-investor-user-service
-        ports:
-          - containerPort: 8080
-        env:
-          - name: GRPC_SERVER_ADDRESS
-            valueFrom:
-              configMapKeyRef:
-                name: user-service-configmap
-                key: GRPC_SERVER_ADDRESS
-          - name: ENVIRONMENT
-            valueFrom:
-              configMapKeyRef:
-                name: user-service-configmap
-                key: ENVIRONMENT
-          - name: DB_CONNECTION
-            valueFrom:
-              secretKeyRef:
-                name: user-service-db-connection-secret
-                key: db-connection
+    spec:
+      containers:
+        - name: user-service
+          image: stevensopi/user-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GRPC_SERVER_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: user-service-configmap
+                  key: GRPC_SERVER_ADDRESS
+            - name: ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: user-service-configmap
+                  key: ENVIRONMENT
+            - name: DB_CONNECTION
+              valueFrom:
+                secretKeyRef:
+                  name: user-service-db-connection-secret
+                  key: db-connection
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: user-service-cluster-ip-service
-metadata:
+spec:
   type: ClusterIP
   selector:
     app: user-service
@@ -56,4 +57,3 @@ metadata:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-  

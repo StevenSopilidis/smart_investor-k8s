@@ -11,31 +11,32 @@ spec:
     metadata:
       labels:
         app: user-service-db
-    containers:
-      - name: user-service-db
-        image: postgres
-        ports:
-          - containerPort: 5432
-        env:
-          - name: POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: user-service-db-secret
-                key: user-service-db-secret-user
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: user-service-db-secret
-                key: user-service-db-secret-password
-          - name: POSTGRES_DB
-            value: user-service-db
+    spec:
+      containers:
+        - name: user-service-db
+          image: postgres
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: user-service-db-secret
+                  key: user-service-db-secret-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-service-db-secret
+                  key: user-service-db-secret-password
+            - name: POSTGRES_DB
+              value: user-service-db
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: user-service-db-cluster-ip-service
-metadata:
+spec:
   type: ClusterIP
   selector:
     app: user-service-db
@@ -43,4 +44,3 @@ metadata:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-  
