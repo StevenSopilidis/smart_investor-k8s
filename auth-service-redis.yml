@@ -17,6 +17,13 @@ spec:
           image: redis
           ports:
             - containerPort: 6379
+        - name: redis-exporter
+          image: oliver006/redis_exporter
+          ports:
+            - containerPort: 9121
+          env:
+            - name: REDIS_ADDR
+              value: "redis://localhost:6379"
 
 ---
 apiVersion: v1
@@ -29,5 +36,10 @@ spec:
     app: auth-service-redis
   ports:
     - protocol: TCP
+      name: redis
       port: 6379
       targetPort: 6379
+    - protocol: TCP
+      name: metrics
+      port: 9121
+      targetPort: 9121
