@@ -7,7 +7,7 @@ data:
   SERVICE_NAME: "symbol-processor"
   SYMBOL_TOPIC: "scraping_topic"
   KAFKA_BROKER: my-kafka.kafka.svc.cluster.local:9092
-  KAFKA_GROUPD_ID: my-group-id
+  KAFKA_GROUP_ID: "my-group-id"
   REDIS_ADDRESS: "symbol-processor-redis-clusterip-service:6379"
   REDIS_PASSWORD: ""
   REDIS_DB: "0"
@@ -29,7 +29,8 @@ spec:
     spec:
       containers:
         - name: symbol-processor-service
-          image: stevensopi/symbol_processor
+          image: test_processor_image
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           env:
@@ -53,7 +54,7 @@ spec:
                 configMapKeyRef:
                   name: symbol-processor-service-configmap
                   key: KAFKA_BROKER
-            - name: REDIS_ADDRESS
+            - name: REDIS_ADDR
               valueFrom:
                 configMapKeyRef:
                   name: symbol-processor-service-configmap
@@ -68,6 +69,11 @@ spec:
                 configMapKeyRef:
                   name: symbol-processor-service-configmap
                   key: REDIS_DB
+            - name: KAFKA_GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: KAFKA_GROUP_ID
 ---
 apiVersion: v1
 kind: Service

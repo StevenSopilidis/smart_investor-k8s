@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: symbol-processor-service-redis-deployment
+  name: symbol-processor-redis-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: symbol-processor-service-redis
+      app: symbol-processor-redis
   template:
     metadata:
       labels:
-        app: symbol-processor-service-redis
+        app: symbol-processor-redis
     spec:
       containers:
-        - name: symbol-processor-service-redis
+        - name: symbol-processor-redis
           image: redis
           ports:
             - containerPort: 6379
