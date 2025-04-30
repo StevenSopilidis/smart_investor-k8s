@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: auth-service-configmap
 data:
-  REDIS_ADDRESS: "auth-service-redis-clusterip:6379"
+  REDIS_ADDRESS: "auth-service-redis-clusterip-service:6379"
   REDIS_PASSWORD: ""
   REDIS_DB: "0"
   TOKEN_DURATION: "10m"

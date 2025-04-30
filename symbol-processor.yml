@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: symbol-processor-service-configmap
+data:
+  ENVIRONMENT: "production"
+  SERVICE_NAME: "symbol-processor"
+  SYMBOL_TOPIC: "scraping_topic"
+  KAFKA_BROKER: my-kafka.kafka.svc.cluster.local:9092
+  KAFKA_GROUPD_ID: my-group-id
+  REDIS_ADDRESS: "symbol-processor-redis-clusterip-service:6379"
+  REDIS_PASSWORD: ""
+  REDIS_DB: "0"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: symbol-processor-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: symbol-processor-service
+  template:
+    metadata:
+      labels:
+        app: symbol-processor-service
+    spec:
+      containers:
+        - name: symbol-processor-service
+          image: stevensopi/symbol_processor
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: ENVIRONMENT
+            - name: SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: SERVICE_NAME
+            - name: SYMBOL_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: SYMBOL_TOPIC                 
+            - name: KAFKA_BROKER
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: KAFKA_BROKER
+            - name: REDIS_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: REDIS_ADDRESS
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: REDIS_PASSWORD
+            - name: REDIS_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: symbol-processor-service-configmap
+                  key: REDIS_DB
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: symbol-processor-service-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: symbol-processor-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

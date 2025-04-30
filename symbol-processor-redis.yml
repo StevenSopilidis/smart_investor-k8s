@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service-redis-deployment
+  name: symbol-processor-service-redis-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth-service-redis
+      app: symbol-processor-service-redis
   template:
     metadata:
       labels:
-        app: auth-service-redis
+        app: symbol-processor-service-redis
     spec:
       containers:
-        - name: auth-service-redis
+        - name: symbol-processor-service-redis
           image: redis
           ports:
             - containerPort: 6379
@@ -29,11 +29,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-service-redis-clusterip-service
+  name: symbol-processor-redis-clusterip-service
 spec:
   type: ClusterIP
   selector:
-    app: auth-service-redis
+    app: symbol-processor-redis
   ports:
     - protocol: TCP
       name: redis
