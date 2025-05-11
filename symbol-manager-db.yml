@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service-db-deployment
+  name: symbol-manager-service-db-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-service-db
+      app: symbol-manager-service-db
   template:
     metadata:
       labels:
-        app: user-service-db
+        app: symbol-manager-service-db
     spec:
       containers:
-        - name: user-service-db
+        - name: symbol-manager-service-db
           image: postgres
           ports:
             - containerPort: 5432
@@ -21,15 +21,15 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: user-service-db-secret
-                  key: user-service-db-secret-user
+                  name: symbol-manager-service-secret
+                  key: user
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: user-service-db-secret
-                  key: user-service-db-secret-password
+                  name: symbol-manager-service-secret
+                  key: pass
             - name: POSTGRES_DB
-              value: user-service-db
+              value: symbol-manager-db
             
         - name: postgres-exporter
           image: quay.io/prometheuscommunity/postgres-exporter
@@ -37,26 +37,26 @@ spec:
             - containerPort: 9187
           env:
             - name: DATA_SOURCE_URI
-              value: "user-service-db-cluster-ip-service:5432/user-service-db?sslmode=disable"
+              value: "symbol-manager-service-db-cluster-ip-service:5432/symbol-manager-service-db?sslmode=disable"
             - name: DATA_SOURCE_USER
               valueFrom:
                 secretKeyRef:
-                  name: user-service-db-secret
-                  key: user-service-db-secret-user
+                  name: symbol-manager-service-secret
+                  key: user
             - name: DATA_SOURCE_PASS
               valueFrom:
                 secretKeyRef:
-                  name: user-service-db-secret
-                  key: user-service-db-secret-password
+                  name: symbol-manager-service-secret
+                  key: pass
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service-db-cluster-ip-service
+  name: symbol-manager-service-db-cluster-ip-service
 spec:
   type: ClusterIP
   selector:
-    app: user-service-db
+    app: symbol-manager-service-db
   ports:
     - protocol: TCP
       name: postgres

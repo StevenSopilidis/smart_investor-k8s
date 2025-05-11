@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: symbol-manager-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: symbol-manager-service
+  template:
+    metadata:
+      labels:
+        app: symbol-manager-service
+    spec:
+      containers:
+        - name: symbol-manager-service
+          image: stevensopi/symbol-manager-service
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef: 
+                  name: symbol-manager-service-secret
+                  value: db-conneciton
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: symbol-manager-service-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: symbol-manager-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
