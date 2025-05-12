@@ -21,12 +21,12 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: symbol-manager-service-secret
+                  name: symbol-manager-service-db-secret
                   key: user
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: symbol-manager-service-secret
+                  name: symbol-manager-service-db-secret
                   key: pass
             - name: POSTGRES_DB
               value: symbol-manager-db
@@ -41,12 +41,12 @@ spec:
             - name: DATA_SOURCE_USER
               valueFrom:
                 secretKeyRef:
-                  name: symbol-manager-service-secret
+                  name: symbol-manager-service-db-secret
                   key: user
             - name: DATA_SOURCE_PASS
               valueFrom:
                 secretKeyRef:
-                  name: symbol-manager-service-secret
+                  name: symbol-manager-service-db-secret
                   key: pass
 ---
 apiVersion: v1
