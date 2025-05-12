@@ -22,7 +22,7 @@ spec:
               valueFrom:
                 secretKeyRef: 
                   name: symbol-manager-service-secret
-                  value: db-conneciton
+                  key: db-connection
 
 ---
 apiVersion: v1
